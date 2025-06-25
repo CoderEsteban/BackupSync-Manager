@@ -1,0 +1,3 @@
+# config/global_config.yaml
+# Carpeta donde se guardan todos los respaldos, a menos que se indique otra
+sites_root: "~/"

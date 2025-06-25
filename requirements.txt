@@ -1,0 +1,4 @@
+Flask>=2.0
+python-crontab>=2.5
+PyYAML>=6.0
+Jinja2>=3.0

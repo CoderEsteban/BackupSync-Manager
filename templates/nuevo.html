@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Crear nuevo sitio</h2>
+  <form method="post">
+    <label for="dominio">Dominio (nombre de respaldo):</label><br>
+    <input type="text" id="dominio" name="dominio" required><br><br>
+
+    <label for="backup_path">Ruta de respaldo (opcional, usa ~ para home):</label><br>
+    <input 
+      type="text" 
+      id="backup_path" 
+      name="backup_path" 
+      placeholder="~/respaldos/mi-sitio" 
+    ><br><br>
+
+    <button type="submit">Guardar</button>
+  </form>
+  <p><a href="{{ url_for('index') }}">← Volver al listado</a></p>
+{% endblock %}
+
+

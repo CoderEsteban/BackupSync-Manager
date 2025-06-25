@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Sitios configurados</h2>
+  {% if sitios %}
+    <ul>
+      {% for s in sitios %}
+        <li>{{ s }}</li>
+      {% endfor %}
+    </ul>
+    <!-- Enlace fijo para crear un sitio nuevo -->
+    <p><a href="{{ url_for('nuevo') }}">+ Crear nuevo sitio</a></p>
+  {% else %}
+    <p>No tienes ningun sitio aún.</p>
+    <!-- Enlace fijo para crear un sitio nuevo -->
+    <p><a href="{{ url_for('nuevo') }}">+ Crear nuevo sitio</a></p>
+  {% endif %}
+{% endblock %}
+
+
+
