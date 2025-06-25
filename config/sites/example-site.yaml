@@ -1,0 +1,13 @@
+# Ejemplo de configuración de sitio para BackupSync Manager
+dominio: ejemplo.com
+root_path: ~/respaldos/ejemplo.com
+
+# Opciones SSH (opcional)
+# ssh_host: 192.0.2.1
+# ssh_user: usuario_remoto
+# ssh_key_path: ~/.ssh/id_rsa
+
+# Base de datos (opcional)
+# db_name: ejemplo_db
+# db_user: ejemplo_usr
+# db_pass: tu_contraseña

@@ -196,3 +196,6 @@ cython_debug/
 
 # No subir configuraciones de sitio
 config/sites/*.yaml
+# Pero sí queremos versionar este ejemplo:
+!config/sites/example-site.yaml
+
