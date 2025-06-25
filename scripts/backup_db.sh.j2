@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Parámetros de conexión remoto BD
+DB_SSH_HOST="{{ db_ssh_host }}"
+DB_SSH_USER="{{ db_ssh_user }}"
+DB_SSH_KEY="{{ db_ssh_key }}"
+
+DB_NAME="{{ db_name }}"
+DB_USER="{{ db_user }}"
+DB_PASS="{{ db_pass }}"
+
+LOCAL_DB="{{ root_path }}/backup_db"
+LOG_FILE="{{ root_path }}/backup_db.log"
+DATE=$(date +"%Y-%m-%d_%H-%M-%S")
+
+mkdir -p "$LOCAL_DB"
+
+echo "[$(date '+%F %T')] Iniciando backup DB {{ db_name }} desde $DB_SSH_HOST" | tee -a "$LOG_FILE"
+
+ssh -i "$DB_SSH_KEY" "$DB_SSH_USER@$DB_SSH_HOST" \
+  "mysqldump -u '$DB_USER' -p'$DB_PASS' --single-transaction --quick --no-tablespaces '$DB_NAME'" \
+  > "$LOCAL_DB/backup_$DATE.sql" 2>>"$LOG_FILE"
+
+if [ $? -eq 0 ]; then
+  echo "[$(date '+%F %T')] Dump exitoso, comprimiendo..." | tee -a "$LOG_FILE"
+  gzip "$LOCAL_DB/backup_$DATE.sql"
+  echo "[$(date '+%F %T')] Backup DB completado: backup_$DATE.sql.gz" | tee -a "$LOG_FILE"
+else
+  echo "[$(date '+%F %T')] ERROR en mysqldump remoto" | tee -a "$LOG_FILE"
+  exit 1
+fi

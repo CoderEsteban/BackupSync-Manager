@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Configuración cargada desde YAML
+SSH_HOST="{{ ssh_host }}"
+SSH_USER="{{ ssh_user }}"
+SSH_KEY="{{ ssh_key }}"
+REMOTE_WWW="{{ remote_www_path }}"
+LOCAL_WWW="{{ root_path }}/backup_www"
+LOG_FILE="{{ root_path }}/backup_www.log"
+DATE=$(date +"%Y-%m-%d_%H-%M-%S")
+
+# Crear local_www si no existe
+mkdir -p "$LOCAL_WWW"
+
+echo "[$(date '+%F %T')] Iniciando backup web de $SSH_USER@$SSH_HOST:$REMOTE_WWW" | tee -a "$LOG_FILE"
+
+# Sincronizar con rsync sobre SSH
+rsync -az -e "ssh -i $SSH_KEY" \
+    --delete \
+    "$SSH_USER@$SSH_HOST:$REMOTE_WWW/" \
+    "$LOCAL_WWW/backup_$DATE/" \
+    2>&1 | tee -a "$LOG_FILE"
+
+echo "[$(date '+%F %T')] Backup web completado: backup_$DATE" | tee -a "$LOG_FILE"

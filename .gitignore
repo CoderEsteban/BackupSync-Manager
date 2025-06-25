@@ -199,3 +199,5 @@ config/sites/*.yaml
 # Pero sí queremos versionar este ejemplo:
 !config/sites/example-site.yaml
 
+# No versionar scripts generados
+generated/

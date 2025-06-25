@@ -1,21 +1,204 @@
 {% extends "base.html" %}
+
 {% block content %}
-  <h2>Crear nuevo sitio</h2>
-  <form method="post">
-    <label for="dominio">Dominio (nombre de respaldo):</label><br>
-    <input type="text" id="dominio" name="dominio" required><br><br>
+<div class="card mb-4">
+  <div class="card-body">
+    <h2 class="card-title">Crear nuevo sitio</h2>
+    <form method="post">
+      <!-- Dominio siempre obligatorio -->
+      <div class="mb-3">
+        <label for="dominio" class="form-label">Dominio (nombre de respaldo):</label>
+        <input type="text" class="form-control" id="dominio" name="dominio" required>
+      </div>
 
-    <label for="backup_path">Ruta de respaldo (opcional, usa ~ para home):</label><br>
-    <input 
-      type="text" 
-      id="backup_path" 
-      name="backup_path" 
-      placeholder="~/respaldos/mi-sitio" 
-    ><br><br>
+      <!-- Ruta de respaldo opcional -->
+      <div class="mb-3">
+        <label for="backup_path" class="form-label">Ruta de respaldo (opcional):</label>
+        <input
+          type="text"
+          class="form-control"
+          id="backup_path"
+          name="backup_path"
+          placeholder="~/respaldos/mi-sitio"
+        >
+      </div>
 
-    <button type="submit">Guardar</button>
-  </form>
-  <p><a href="{{ url_for('index') }}">← Volver al listado</a></p>
+      <!-- Checkbox para web -->
+      <div class="form-check mb-3">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="enable_web"
+          name="enable_web"
+        >
+        <label class="form-check-label" for="enable_web">
+          Hacer respaldo del sitio web
+        </label>
+      </div>
+
+      <!-- Sección web (oculta por defecto) -->
+      <div id="web-config" class="ps-3 border-start mb-4" style="display:none">
+        <h5>Configuración Web</h5>
+        <div class="mb-3">
+          <label for="ssh_host" class="form-label">SSH Host (web):</label>
+          <input
+            type="text"
+            class="form-control"
+            id="ssh_host"
+            name="ssh_host"
+            data-required="true"
+            disabled
+          >
+        </div>
+        <div class="mb-3">
+          <label for="ssh_user" class="form-label">SSH User (web):</label>
+          <input
+            type="text"
+            class="form-control"
+            id="ssh_user"
+            name="ssh_user"
+            data-required="true"
+            disabled
+          >
+        </div>
+        <div class="mb-3">
+          <label for="ssh_key" class="form-label">SSH Key (web):</label>
+          <input
+            type="text"
+            class="form-control"
+            id="ssh_key"
+            name="ssh_key"
+            disabled
+          >
+        </div>
+        <div class="mb-3">
+          <label for="remote_www_path" class="form-label">Carpeta remota (web):</label>
+          <input
+            type="text"
+            class="form-control"
+            id="remote_www_path"
+            name="remote_www_path"
+            data-required="true"
+            disabled
+          >
+        </div>
+      </div>
+
+      <!-- Checkbox para BD -->
+      <div class="form-check mb-3">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="enable_db"
+          name="enable_db"
+        >
+        <label class="form-check-label" for="enable_db">
+          Hacer respaldo de Base de Datos
+        </label>
+      </div>
+
+      <!-- Sección BD (oculta por defecto) -->
+      <div id="db-config" class="ps-3 border-start mb-4" style="display:none">
+        <h5>Configuración Base de Datos</h5>
+        <div class="mb-3">
+          <label for="db_ssh_host" class="form-label">SSH Host (BD):</label>
+          <input
+            type="text"
+            class="form-control"
+            id="db_ssh_host"
+            name="db_ssh_host"
+            data-required="true"
+            disabled
+          >
+        </div>
+        <div class="mb-3">
+          <label for="db_ssh_user" class="form-label">SSH User (BD):</label>
+          <input
+            type="text"
+            class="form-control"
+            id="db_ssh_user"
+            name="db_ssh_user"
+            data-required="true"
+            disabled
+          >
+        </div>
+        <div class="mb-3">
+          <label for="db_ssh_key" class="form-label">SSH Key (BD):</label>
+          <input
+            type="text"
+            class="form-control"
+            id="db_ssh_key"
+            name="db_ssh_key"
+            disabled
+          >
+        </div>
+        <div class="mb-3">
+          <label for="db_name" class="form-label">Nombre de la BD:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="db_name"
+            name="db_name"
+            data-required="true"
+            disabled
+          >
+        </div>
+        <div class="mb-3">
+          <label for="db_user" class="form-label">Usuario BD:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="db_user"
+            name="db_user"
+            data-required="true"
+            disabled
+          >
+        </div>
+        <div class="mb-3">
+          <label for="db_pass" class="form-label">Contraseña BD:</label>
+          <input
+            type="password"
+            class="form-control"
+            id="db_pass"
+            name="db_pass"
+            disabled
+          >
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Guardar</button>
+      <a href="{{ url_for('index') }}" class="btn btn-secondary ms-2">Cancelar</a>
+    </form>
+  </div>
+</div>
+
+<script>
+// scripts para mostrar/ocultar y ajustar `required`
+document.addEventListener('DOMContentLoaded', function(){
+  const toggle = (checkboxId, sectionId) => {
+    const cb = document.getElementById(checkboxId);
+    const sec = document.getElementById(sectionId);
+    cb.addEventListener('change', () => {
+      const show = cb.checked;
+      sec.style.display = show ? 'block' : 'none';
+      sec.querySelectorAll('input').forEach(input => {
+        if (show) {
+          input.removeAttribute('disabled');
+          if (input.dataset.required === 'true') {
+            input.setAttribute('required', 'required');
+          }
+        } else {
+          input.setAttribute('disabled', 'disabled');
+          input.removeAttribute('required');
+        }
+      });
+    });
+    // disparar evento inicial
+    cb.dispatchEvent(new Event('change'));
+  };
+
+  toggle('enable_web', 'web-config');
+  toggle('enable_db', 'db-config');
+});
+</script>
 {% endblock %}
-
-
